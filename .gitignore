@@ -1,0 +1,47 @@
+# ============================================================
+#  Unreal Engine .gitignore
+# ============================================================
+
+# Generated / build output — never commit these
+Binaries/
+Build/
+ArchivedBuilds/
+DerivedDataCache/
+Intermediate/
+Saved/
+Script/
+
+# Also catch these anywhere in the tree (plugins, subfolders)
+**/Binaries/
+**/Build/
+**/DerivedDataCache/
+**/Intermediate/
+**/Saved/
+
+# ------------------------------------------------------------
+#  IDE / editor files
+# ------------------------------------------------------------
+.vs/
+.vscode/
+.idea/
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
+# ------------------------------------------------------------
+#  OS cruft
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------------------------------------------------------------
+#  Config: keep the shared/checked-in defaults, ignore local overrides
+# ------------------------------------------------------------
+# Uncomment if you use per-user local config that shouldn't be shared:
+# Config/*Local*.ini
