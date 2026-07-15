@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "MainCharacter.generated.h"
 
+class UAnimBlueprint;
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
@@ -21,6 +23,9 @@ class DEADAIR_API AMainCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMainCharacter();
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<UAnimBlueprint> FirstPersonDefaultAnim;
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,6 +42,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> JumpAction;
 
+	// Look Input Actions
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> LookAction;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -46,4 +55,27 @@ public:
 
 	UFUNCTION()
 	void Move(const FInputActionValue &Value);
+
+	// Handles Look Input
+	UFUNCTION()
+	void Look(const FInputActionValue &Value);
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	TObjectPtr<UCameraComponent> FirstPersonCameraComponent;
+
+	// Offset for the first-person camera
+	UPROPERTY(EditAnywhere, Category = Camera)
+	FVector FirstPersonCameraOffset = FVector(2.8f, 5.9f, 0.0f);
+
+	// First-person primitives field of view
+	UPROPERTY(EditAnywhere, Category = Camera)
+	float FirstPersonFieldOfView = 70.0f;
+
+	// First-person primitives view scale
+	UPROPERTY(EditAnywhere, Category = Camera)
+	float FirstPersonScale = 0.6f;
+
+	// First-person mesh, visible only to the owning player
+	UPROPERTY(VisibleAnywhere, Category = Mesh)
+	TObjectPtr<USkeletalMeshComponent> FirstPersonMeshComponent;
 };
