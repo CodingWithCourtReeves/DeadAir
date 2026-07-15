@@ -29,9 +29,15 @@ Script/
 *.opensdf
 *.sdf
 *.sln
+*.slnx
 *.suo
 *.xcodeproj
 *.xcworkspace
+
+# Machine-specific / auto-generated tooling files
+.vsconfig
+.ignore
+*.code-workspace
 
 # ------------------------------------------------------------
 #  OS cruft
