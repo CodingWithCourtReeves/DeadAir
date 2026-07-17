@@ -22,6 +22,14 @@ AMainCharacter::AMainCharacter()
 	Weapon->SetCollisionProfileName(FName("NoCollision"));
 	Weapon->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
 
+	MuzzleFlashMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MuzzleFlashMesh"));
+	check(MuzzleFlashMesh != nullptr);
+	MuzzleFlashMesh->SetVisibility(false);
+	MuzzleFlashMesh->SetRelativeScale3D(FVector(1));
+	MuzzleFlashMesh->SetupAttachment(Weapon, FName("MuzzleSocket"));
+	MuzzleFlashMesh->SetCollisionProfileName(FName("NoCollision"));
+	MuzzleFlashMesh->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
+
 	// Attach the first-person mesh to the third-person mesh
 	FirstPersonMeshComponent->SetupAttachment(GetMesh());
 	FirstPersonMeshComponent->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
@@ -61,6 +69,7 @@ void AMainCharacter::BeginPlay()
 
 	// Only the owning player sees the first-person mesh
 	FirstPersonMeshComponent->SetOnlyOwnerSee(true);
+	MuzzleFlashMesh->SetOnlyOwnerSee(true);
 
 	// Hide the 3rd-person mesh from the owning player
 	GetMesh()->SetOwnerNoSee(true);
@@ -76,8 +85,6 @@ void AMainCharacter::BeginPlay()
 	{
 		Subsystem->AddMappingContext(FirstPersonContext, 0);
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using AdventureCharacter."));
 
 	DefaultArmsRotation = FirstPersonMeshComponent->GetRelativeRotation();
 }
@@ -145,8 +152,20 @@ void AMainCharacter::Fire(const FInputActionValue &Value)
 
 	if (WeaponAnimInstance && WeaponFireMontage)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bang for sure 2!"));
 		float testing = WeaponAnimInstance->Montage_Play(WeaponFireMontage);
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Montage len: %f"), testing));
 	}
+
+	MuzzleFlashMesh->SetVisibility(true);
+	GetWorldTimerManager().SetTimer(
+		MuzzleFlashTimerHandle,
+		this,
+		&AMainCharacter::HideMuzzleFlash,
+		0.05f,
+		false);
+	UGameplayStatics::PlaySound2D(this, FireSound);
+}
+
+void AMainCharacter::HideMuzzleFlash()
+{
+	MuzzleFlashMesh->SetVisibility(false);
 }

@@ -8,12 +8,14 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 #include "MainCharacter.generated.h"
 
 class UAnimBlueprint;
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
+class USoundBase;
 
 UCLASS()
 class DEADAIR_API AMainCharacter : public ACharacter
@@ -30,6 +32,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void HideMuzzleFlash();
+
+	FTimerHandle MuzzleFlashTimerHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputMappingContext> FirstPersonContext;
@@ -55,6 +61,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
 	TObjectPtr<UAnimMontage> WeaponFireMontage;
+
+	UPROPERTY(EditAnywhere, Category = Audio)
+	TObjectPtr<USoundBase> FireSound;
 
 public:
 	// Called every frame
@@ -96,4 +105,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(VisibleAnywhere, Category = Mesh)
+	TObjectPtr<UStaticMeshComponent> MuzzleFlashMesh;
 };
