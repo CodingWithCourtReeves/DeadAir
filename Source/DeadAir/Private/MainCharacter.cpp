@@ -37,9 +37,7 @@ AMainCharacter::AMainCharacter()
 
 	// Position the camera slightly above the eyes and rotate it to behind the player's head
 	FirstPersonCameraComponent->SetRelativeLocationAndRotation(FirstPersonCameraOffset, FRotator(0.0f, 90.0f, -90.0f));
-
-	// Enable the pawn to control camera rotation.
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	FirstPersonCameraComponent->bUsePawnControlRotation = false;
 
 	// Enable first-person rendering and set default FOV and scale values
 	FirstPersonCameraComponent->bEnableFirstPersonFieldOfView = true;
@@ -80,6 +78,8 @@ void AMainCharacter::BeginPlay()
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using AdventureCharacter."));
+
+	DefaultArmsRotation = FirstPersonMeshComponent->GetRelativeRotation();
 }
 
 // Called every frame
@@ -126,6 +126,10 @@ void AMainCharacter::Look(const FInputActionValue &Value)
 	{
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
+
+		double pitch = GetControlRotation().Pitch;
+
+		FirstPersonMeshComponent->SetRelativeRotation(DefaultArmsRotation + FRotator(FRotator::NormalizeAxis(pitch), 0.0f, 0.0f));
 	}
 }
 

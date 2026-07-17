@@ -88,6 +88,7 @@ public:
 	// First-person primitives view scale
 	UPROPERTY(EditAnywhere, Category = Camera)
 	float FirstPersonScale = 0.6f;
+	FRotator DefaultArmsRotation;
 
 	// First-person mesh, visible only to the owning player
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
