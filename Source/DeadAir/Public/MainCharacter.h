@@ -46,6 +46,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> LookAction;
 
+	// Look Input Actions
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
+	TObjectPtr<UAnimMontage> FireMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
+	TObjectPtr<UAnimMontage> WeaponFireMontage;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -59,6 +69,10 @@ public:
 	// Handles Look Input
 	UFUNCTION()
 	void Look(const FInputActionValue &Value);
+
+	// Handles fire input
+	UFUNCTION()
+	void Fire(const FInputActionValue &Value);
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	TObjectPtr<UCameraComponent> FirstPersonCameraComponent;
@@ -78,4 +92,7 @@ public:
 	// First-person mesh, visible only to the owning player
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	TObjectPtr<USkeletalMeshComponent> FirstPersonMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = Mesh)
+	TObjectPtr<USkeletalMeshComponent> Weapon;
 };

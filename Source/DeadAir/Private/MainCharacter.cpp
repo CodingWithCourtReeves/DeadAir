@@ -16,6 +16,12 @@ AMainCharacter::AMainCharacter()
 	FirstPersonMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
 	check(FirstPersonMeshComponent != nullptr);
 
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	check(Weapon != nullptr);
+	Weapon->SetupAttachment(FirstPersonMeshComponent, FName("GripPoint"));
+	Weapon->SetCollisionProfileName(FName("NoCollision"));
+	Weapon->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
+
 	// Attach the first-person mesh to the third-person mesh
 	FirstPersonMeshComponent->SetupAttachment(GetMesh());
 	FirstPersonMeshComponent->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
@@ -94,6 +100,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainCharacter::Fire);
 	}
 }
 
@@ -119,5 +126,23 @@ void AMainCharacter::Look(const FInputActionValue &Value)
 	{
 		AddControllerYawInput(LookAxisValue.X);
 		AddControllerPitchInput(LookAxisValue.Y);
+	}
+}
+
+void AMainCharacter::Fire(const FInputActionValue &Value)
+{
+	UAnimInstance *AnimInstance = FirstPersonMeshComponent->GetAnimInstance();
+
+	if (AnimInstance && FireMontage)
+	{
+		AnimInstance->Montage_Play(FireMontage);
+	}
+	UAnimInstance *WeaponAnimInstance = Weapon->GetAnimInstance();
+
+	if (WeaponAnimInstance && WeaponFireMontage)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bang for sure 2!"));
+		float testing = WeaponAnimInstance->Montage_Play(WeaponFireMontage);
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Montage len: %f"), testing));
 	}
 }
