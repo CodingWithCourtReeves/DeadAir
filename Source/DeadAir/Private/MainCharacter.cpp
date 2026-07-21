@@ -16,6 +16,8 @@ AMainCharacter::AMainCharacter()
 	FirstPersonMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
 	check(FirstPersonMeshComponent != nullptr);
 
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	check(Weapon != nullptr);
 	Weapon->SetupAttachment(FirstPersonMeshComponent, FName("GripPoint"));
@@ -76,6 +78,12 @@ void AMainCharacter::BeginPlay()
 	// Make the 3rd-person mesh cast a shadow
 	GetMesh()->CastShadow = true;
 	GetMesh()->bCastHiddenShadow = true;
+
+	if (HUDWidgetClass)
+	{
+		HUDWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
+		if (HUDWidget) { HUDWidget->AddToViewport(); }
+	}
 
 	// Get the player controller that is possessing this character
 	APlayerController *PlayerController = GetController<APlayerController>();
@@ -144,6 +152,8 @@ void AMainCharacter::Fire(const FInputActionValue &Value)
 {
 	UAnimInstance *AnimInstance = FirstPersonMeshComponent->GetAnimInstance();
 
+	
+	UE_LOG(LogTemp, Warning, TEXT("CurrentHealth: %f"), HealthComponent->CurrentHealth);
 	if (AnimInstance && FireMontage)
 	{
 		AnimInstance->Montage_Play(FireMontage);

@@ -9,6 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include "HealthComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "MainCharacter.generated.h"
 
 class UAnimBlueprint;
@@ -108,4 +110,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	TObjectPtr<UStaticMeshComponent> MuzzleFlashMesh;
+
+	UPROPERTY(BlueprintReadOnly, Category = Health)
+	TObjectPtr<UHealthComponent> HealthComponent;
+
+	UPROPERTY(EditAnywhere, Category = UI)
+	TSubclassOf<UUserWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> HUDWidget;          // the live instance
 };
