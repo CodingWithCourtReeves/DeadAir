@@ -24,16 +24,25 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	TObjectPtr<UStaticMeshComponent> MuzzleFlashMesh;
 
+	UPROPERTY(EditAnywhere, Category = Audio)
+	TObjectPtr<USoundBase> FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
+	TObjectPtr<UAnimMontage> FireMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
+	TObjectPtr<UAnimMontage> WeaponFireMontage;
+
 	// Handles fire input
 	UFUNCTION()
 	void Fire(AMainCharacter *Shooter);
 
 	FTimerHandle MuzzleFlashTimerHandle;
-	void HideMuzzleFlash();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void HideMuzzleFlash();
 
 public:
 	// Called every frame

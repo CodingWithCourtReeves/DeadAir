@@ -11,6 +11,14 @@ AWeapon::AWeapon()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	check(WeaponMesh != nullptr);
 	RootComponent = WeaponMesh;
+
+	MuzzleFlashMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MuzzleFlashMesh"));
+	check(MuzzleFlashMesh != nullptr);
+	MuzzleFlashMesh->SetVisibility(false);
+	MuzzleFlashMesh->SetRelativeScale3D(FVector(1));
+	MuzzleFlashMesh->SetupAttachment(WeaponMesh, FName("MuzzleSocket"));
+	MuzzleFlashMesh->SetCollisionProfileName(FName("NoCollision"));
+	MuzzleFlashMesh->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
 }
 
 // Called when the game starts or when spawned
@@ -31,4 +39,5 @@ void AWeapon::Fire(AMainCharacter *Shooter)
 
 void AWeapon::HideMuzzleFlash()
 {
+	MuzzleFlashMesh->SetVisibility(false);
 }
