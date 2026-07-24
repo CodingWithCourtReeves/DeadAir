@@ -18,6 +18,7 @@ class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
 class USoundBase;
+class UInventoryComponent;
 
 UCLASS()
 class DEADAIR_API AMainCharacter : public ACharacter
@@ -114,9 +115,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = Health)
 	TObjectPtr<UHealthComponent> HealthComponent;
 
+	UPROPERTY(BlueprintReadOnly, Category = Inventory)
+	TObjectPtr<UInventoryComponent> InventoryComponent;
+
 	UPROPERTY(EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UUserWidget> HUDWidget;          // the live instance
+	TObjectPtr<UUserWidget> HUDWidget; // the live instance
 };

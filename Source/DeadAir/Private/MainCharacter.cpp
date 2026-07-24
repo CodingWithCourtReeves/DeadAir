@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MainCharacter.h"
+#include "InventoryComponent.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -17,6 +18,7 @@ AMainCharacter::AMainCharacter()
 	check(FirstPersonMeshComponent != nullptr);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	check(Weapon != nullptr);
@@ -82,7 +84,10 @@ void AMainCharacter::BeginPlay()
 	if (HUDWidgetClass)
 	{
 		HUDWidget = CreateWidget<UUserWidget>(GetWorld(), HUDWidgetClass);
-		if (HUDWidget) { HUDWidget->AddToViewport(); }
+		if (HUDWidget)
+		{
+			HUDWidget->AddToViewport();
+		}
 	}
 
 	// Get the player controller that is possessing this character
@@ -151,9 +156,6 @@ void AMainCharacter::Look(const FInputActionValue &Value)
 void AMainCharacter::Fire(const FInputActionValue &Value)
 {
 	UAnimInstance *AnimInstance = FirstPersonMeshComponent->GetAnimInstance();
-
-	
-	UE_LOG(LogTemp, Warning, TEXT("CurrentHealth: %f"), HealthComponent->CurrentHealth);
 	if (AnimInstance && FireMontage)
 	{
 		AnimInstance->Montage_Play(FireMontage);
