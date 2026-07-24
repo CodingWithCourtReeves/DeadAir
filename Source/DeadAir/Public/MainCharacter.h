@@ -19,6 +19,7 @@ class UInputAction;
 class UInputComponent;
 class USoundBase;
 class UInventoryComponent;
+class AWeapon;
 
 UCLASS()
 class DEADAIR_API AMainCharacter : public ACharacter
@@ -35,8 +36,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void HideMuzzleFlash();
 
 	FTimerHandle MuzzleFlashTimerHandle;
 
@@ -58,15 +57,6 @@ protected:
 	// Look Input Actions
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> FireAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
-	TObjectPtr<UAnimMontage> FireMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
-	TObjectPtr<UAnimMontage> WeaponFireMontage;
-
-	UPROPERTY(EditAnywhere, Category = Audio)
-	TObjectPtr<USoundBase> FireSound;
 
 public:
 	// Called every frame
@@ -106,17 +96,14 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
 	TObjectPtr<USkeletalMeshComponent> FirstPersonMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = Mesh)
-	TObjectPtr<USkeletalMeshComponent> Weapon;
-
-	UPROPERTY(VisibleAnywhere, Category = Mesh)
-	TObjectPtr<UStaticMeshComponent> MuzzleFlashMesh;
-
 	UPROPERTY(BlueprintReadOnly, Category = Health)
 	TObjectPtr<UHealthComponent> HealthComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = Inventory)
 	TObjectPtr<UInventoryComponent> InventoryComponent;
+
+	UPROPERTY(EditAnywhere, Category = Inventory)
+	TSubclassOf<AWeapon> StartingWeaponClass;
 
 	UPROPERTY(EditAnywhere, Category = UI)
 	TSubclassOf<UUserWidget> HUDWidgetClass;

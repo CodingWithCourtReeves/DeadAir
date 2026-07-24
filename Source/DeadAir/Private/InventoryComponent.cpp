@@ -27,6 +27,7 @@ void UInventoryComponent::AddWeapon(AWeapon *Weapon)
 	if (CurrentWeapon == nullptr)
 	{
 		CurrentWeapon = Weapon;
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Adding current weapon"));
 	}
 }
 

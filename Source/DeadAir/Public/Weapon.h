@@ -28,7 +28,7 @@ public:
 	TObjectPtr<USoundBase> FireSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
-	TObjectPtr<UAnimMontage> FireMontage;
+	TObjectPtr<UAnimMontage> ArmFireMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
 	TObjectPtr<UAnimMontage> WeaponFireMontage;

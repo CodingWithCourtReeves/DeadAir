@@ -2,6 +2,7 @@
 
 #include "MainCharacter.h"
 #include "InventoryComponent.h"
+#include "Weapon.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -19,20 +20,6 @@ AMainCharacter::AMainCharacter()
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
-
-	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
-	check(Weapon != nullptr);
-	Weapon->SetupAttachment(FirstPersonMeshComponent, FName("GripPoint"));
-	Weapon->SetCollisionProfileName(FName("NoCollision"));
-	Weapon->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
-
-	MuzzleFlashMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MuzzleFlashMesh"));
-	check(MuzzleFlashMesh != nullptr);
-	MuzzleFlashMesh->SetVisibility(false);
-	MuzzleFlashMesh->SetRelativeScale3D(FVector(1));
-	MuzzleFlashMesh->SetupAttachment(Weapon, FName("MuzzleSocket"));
-	MuzzleFlashMesh->SetCollisionProfileName(FName("NoCollision"));
-	MuzzleFlashMesh->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
 
 	// Attach the first-person mesh to the third-person mesh
 	FirstPersonMeshComponent->SetupAttachment(GetMesh());
@@ -73,7 +60,6 @@ void AMainCharacter::BeginPlay()
 
 	// Only the owning player sees the first-person mesh
 	FirstPersonMeshComponent->SetOnlyOwnerSee(true);
-	MuzzleFlashMesh->SetOnlyOwnerSee(true);
 
 	// Hide the 3rd-person mesh from the owning player
 	GetMesh()->SetOwnerNoSee(true);
@@ -100,6 +86,20 @@ void AMainCharacter::BeginPlay()
 	}
 
 	DefaultArmsRotation = FirstPersonMeshComponent->GetRelativeRotation();
+
+	if (StartingWeaponClass)
+	{
+		AWeapon *SpawnedWeapon = GetWorld()->SpawnActor<AWeapon>(StartingWeaponClass);
+		if (SpawnedWeapon)
+		{
+			SpawnedWeapon->SetOwner(this);
+			SpawnedWeapon->AttachToComponent(FirstPersonMeshComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("GripPoint"));
+			if (InventoryComponent)
+			{
+				InventoryComponent->AddWeapon(SpawnedWeapon);
+			}
+		}
+	}
 }
 
 // Called every frame
@@ -155,29 +155,10 @@ void AMainCharacter::Look(const FInputActionValue &Value)
 
 void AMainCharacter::Fire(const FInputActionValue &Value)
 {
-	UAnimInstance *AnimInstance = FirstPersonMeshComponent->GetAnimInstance();
-	if (AnimInstance && FireMontage)
+	if (InventoryComponent->CurrentWeapon == nullptr)
 	{
-		AnimInstance->Montage_Play(FireMontage);
-	}
-	UAnimInstance *WeaponAnimInstance = Weapon->GetAnimInstance();
-
-	if (WeaponAnimInstance && WeaponFireMontage)
-	{
-		float testing = WeaponAnimInstance->Montage_Play(WeaponFireMontage);
+		return;
 	}
 
-	MuzzleFlashMesh->SetVisibility(true);
-	GetWorldTimerManager().SetTimer(
-		MuzzleFlashTimerHandle,
-		this,
-		&AMainCharacter::HideMuzzleFlash,
-		0.05f,
-		false);
-	UGameplayStatics::PlaySound2D(this, FireSound);
-}
-
-void AMainCharacter::HideMuzzleFlash()
-{
-	MuzzleFlashMesh->SetVisibility(false);
+	InventoryComponent->CurrentWeapon->Fire(this);
 }
